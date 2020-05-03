@@ -25,6 +25,7 @@ def gameLoop():
     game_close = False
     x1 = window_width/2
     y1 = 150
+    snakecoords = [x1, y1]
     x1change = 0
     y1change = 0
     direction = ""  #in snake you cannot do a U-turn!
@@ -49,7 +50,8 @@ def gameLoop():
             else:
                 message("You scored {} points".format(score), blue, 0, 300)
             message("Game over", red, 0, 10)
-            message("Press Q to quit or C to play again", red, 0, 60)
+            message("Press Q to quit or C to", red, 0, 60)
+            message("play again", red, 0, 110)
             pygame.display.update()
             #HIGHSCORE FUNCTION - save highscore between runs (and an all time leaderboard via a separate document???)
 
@@ -93,9 +95,29 @@ def gameLoop():
             appley = random.randint(0, window_height-60)
             appley = round(appley/10) * 10
             newpos = False
+            if direction == "left":
+                snakecoords.append(x1 + 10)
+                snakecoords.append(y1)
+            elif direction == "right":
+                snakecoords.append(x1 - 10)
+                snakecoords.append(y1)
+            elif direction == "up":
+                snakecoords.append(x1)
+                snakecoords.append(y1 + 10)
+            elif direction == "down":
+                snakecoords.append(x1)
+                snakecoords.append(y1 - 10)
 
+        #update positions list to move snake
         x1 += x1change
         y1 += y1change
+        snakecoords.remove(snakecoords[0])
+        snakecoords.remove(snakecoords[0])
+        snakecoords.append(x1)
+        snakecoords.append(y1)
+
+
+
         window.fill(black)
 
         #check if snake is outside of game area
@@ -108,7 +130,12 @@ def gameLoop():
             #display a message saying "yum" somehow - it isn't working :()
 
         pygame.draw.rect(window, (255,0,0), [applex, appley, 10, 10])
-        pygame.draw.rect(window, green, [x1,y1,10,10])
+        number = 0
+        for itemno in range(0,len(snakecoords)):
+            if not itemno%2 == 1:
+                pygame.draw.rect(window, green, [snakecoords[number],snakecoords[number+1],10,10])
+                number += 2
+
         #display score
         pygame.draw.rect(window, (255,255,255,), [0,300,400,50])
         message("Score: {}".format(score), blue, 0, 300)
