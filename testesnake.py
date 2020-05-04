@@ -11,7 +11,7 @@ window = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption('Snake game')
 
 #define constant variables
-
+blocklength = 10            #ADD A PROCEDURE to ask the user if they want big snake or small snake. Choose skin colour as well???
 black = (0,0,0)
 green = (0,255,0)
 blue = (0,0,255)
@@ -24,7 +24,7 @@ def gameLoop():
     game_over = False
     game_close = False
     x1 = window_width/2
-    y1 = 150
+    y1 = (window_height-50)/2
     snakecoords = [x1, y1]
     x1change = 0
     y1change = 0
@@ -90,10 +90,10 @@ def gameLoop():
                         direction = "down"
         #position apple
         if newpos == True:
-            applex = random.randint(0, window_width-10)
-            applex = round(applex/10) * 10
-            appley = random.randint(0, window_height-60)
-            appley = round(appley/10) * 10
+            applex = random.randint(0, window_width - blocklength)
+            applex = round(applex/blocklength) * blocklength
+            appley = random.randint(0, window_height - (blocklength + 50))
+            appley = round(appley/blocklength) * blocklength
             newpos = False
             if direction == "left":
                 snakecoords.append(x1 + 10)
@@ -129,11 +129,11 @@ def gameLoop():
             score += 1
             #display a message saying "yum" somehow - it isn't working :()
 
-        pygame.draw.rect(window, (255,0,0), [applex, appley, 10, 10])
+        pygame.draw.rect(window, (255,0,0), [applex, appley, blocklength, blocklength])
         number = 0
         for itemno in range(0,len(snakecoords)):
             if not itemno%2 == 1:
-                pygame.draw.rect(window, green, [snakecoords[number],snakecoords[number+1],10,10])
+                pygame.draw.rect(window, green, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
                 number += 2
 
         #display score
