@@ -4,18 +4,23 @@ import time
 import pygame
 pygame.init()
 
-#set up window
-window_width = 400
-window_height = 350
-window = pygame.display.set_mode((window_width, window_height))
-pygame.display.set_caption('Snake game')
-
 #define constant variables
-blocklength = 10            #ADD A PROCEDURE to ask the user if they want big snake or small snake. Choose skin colour as well???
+blocklength = int(input("What size of snake do you want (10, 20, 30, 50 or anywhere inbetween)!\n"))            #ADD A PROCEDURE to ask the user if they want big snake or small snake. Choose skin colour as well???
 black = (0,0,0)
 green = (0,255,0)
 blue = (0,0,255)
 red = (255,0,0)
+
+#set up window
+window_width = blocklength * 40
+window_height = blocklength * 35
+if window_width > 1400 or window_height > 1000:
+    window_width = 1400
+    window_height = 1000
+window = pygame.display.set_mode((window_width, window_height))
+pygame.display.set_caption('Snake game')
+
+
 
 
 def gameLoop():
@@ -74,23 +79,23 @@ def gameLoop():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                 #if not direction == "right":
-                    x1change = -10
+                    x1change = -blocklength
                     y1change = 0
                     direction = "left"
                 elif event.key == pygame.K_RIGHT:
                 #if not direction == "left":
-                    x1change = 10
+                    x1change = blocklength
                     y1change = 0
                     direction = "right"
                 elif event.key == pygame.K_UP:
                 #if not direction == "down":
                     x1change = 0
-                    y1change = -10
+                    y1change = -blocklength
                     direction = "up"
                 elif event.key == pygame.K_DOWN:
                 #if not direction == "up":
                     x1change = 0
-                    y1change = 10
+                    y1change = blocklength
                     direction = "down"
         #position apple
         if newpos == True:
@@ -98,19 +103,20 @@ def gameLoop():
             applex = round(applex/blocklength) * blocklength
             appley = random.randint(0, window_height - (blocklength + 50))
             appley = round(appley/blocklength) * blocklength
+
             newpos = False
             if direction == "left":
-                snakecoords.append(x1 + 10)
+                snakecoords.append(x1 + blocklength)
                 snakecoords.append(y1)
             elif direction == "right":
-                snakecoords.append(x1 - 10)
+                snakecoords.append(x1 - blocklength)
                 snakecoords.append(y1)
             elif direction == "up":
                 snakecoords.append(x1)
-                snakecoords.append(y1 + 10)
+                snakecoords.append(y1 + blocklength)
             elif direction == "down":
                 snakecoords.append(x1)
-                snakecoords.append(y1 - 10)
+                snakecoords.append(y1 - blocklength)
 
         #update positions
         x1 += x1change
@@ -146,10 +152,9 @@ def gameLoop():
                 pygame.draw.rect(window, green, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
                 number += 2
 
-    
         #display score
-        pygame.draw.rect(window, (255,255,255,), [0,300,400,50])
-        message("Score: {}".format(score), blue, 0, 300)
+        pygame.draw.rect(window, (255,255,255,), [0, window_height - 50, window_width, 50])
+        message("Score: {}".format(score), blue, 0, window_height - 50)
 
         pygame.display.update()
         clock.tick(snake_speed)
