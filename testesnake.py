@@ -22,9 +22,13 @@ def gameLoop():
     #define variables that are reset for each game
     score = 0
     game_over = False
-    game_close = False
+    round_over = False
     x1 = window_width/2
+    x1 = round(x1/blocklength) * blocklength
+    
     y1 = (window_height-50)/2
+    y1 = round(y1/blocklength) * blocklength
+
     snakecoords = [x1, y1]
     x1change = 0
     y1change = 0
@@ -42,16 +46,16 @@ def gameLoop():
     #event loop
     while not game_over:
 
-        while game_close == True:
+        while round_over == True:
             #game over: display stats
             window.fill(black)
             if score == 1:
                 message("You scored {} point".format(score), blue, 0, 300)
             else:
                 message("You scored {} points".format(score), blue, 0, 300)
-            message("Game over", red, 0, 10)
-            message("Press Q to quit or C to", red, 0, 60)
-            message("play again", red, 0, 110)
+            message("Game over", red, 100, 10)
+            message("Press Q to quit or space", red, 0, 60)
+            message("to play again", red, 0, 110)
             pygame.display.update()
             #HIGHSCORE FUNCTION - save highscore between runs (and an all time leaderboard via a separate document???)
 
@@ -59,8 +63,8 @@ def gameLoop():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
                         game_over = True
-                        game_close = False
-                    if event.key == pygame.K_c:
+                        round_over = False
+                    if event.key == pygame.K_SPACE:
                         gameLoop()
 
 
@@ -69,25 +73,25 @@ def gameLoop():
                 game_over = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    if not direction == "right":
-                        x1change = -10
-                        y1change = 0
-                        direction = "left"
+                #if not direction == "right":
+                    x1change = -10
+                    y1change = 0
+                    direction = "left"
                 elif event.key == pygame.K_RIGHT:
-                    if not direction == "left":
-                        x1change = 10
-                        y1change = 0
-                        direction = "right"
+                #if not direction == "left":
+                    x1change = 10
+                    y1change = 0
+                    direction = "right"
                 elif event.key == pygame.K_UP:
-                    if not direction == "down":
-                        x1change = 0
-                        y1change = -10
-                        direction = "up"
+                #if not direction == "down":
+                    x1change = 0
+                    y1change = -10
+                    direction = "up"
                 elif event.key == pygame.K_DOWN:
-                    if not direction == "up":
-                        x1change = 0
-                        y1change = 10
-                        direction = "down"
+                #if not direction == "up":
+                    x1change = 0
+                    y1change = 10
+                    direction = "down"
         #position apple
         if newpos == True:
             applex = random.randint(0, window_width - blocklength)
@@ -108,21 +112,27 @@ def gameLoop():
                 snakecoords.append(x1)
                 snakecoords.append(y1 - 10)
 
-        #update positions list to move snake
+        #update positions
         x1 += x1change
         y1 += y1change
+
+        if score >= 1:
+            for i in range(0, len(snakecoords), 2):
+                if snakecoords[i] == x1:
+                    if snakecoords[i + 1] == y1:
+                        round_over = True
+
+        #update positions list to move snake
         snakecoords.remove(snakecoords[0])
         snakecoords.remove(snakecoords[0])
         snakecoords.append(x1)
         snakecoords.append(y1)
 
-
-
         window.fill(black)
 
         #check if snake is outside of game area
         if x1 >= window_width or x1 < 0 or y1 >= (window_height-50) or y1 < 0: 
-            game_close = True
+            round_over = True
         
         if x1 == applex and y1 == appley:
             newpos = True
@@ -136,6 +146,7 @@ def gameLoop():
                 pygame.draw.rect(window, green, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
                 number += 2
 
+    
         #display score
         pygame.draw.rect(window, (255,255,255,), [0,300,400,50])
         message("Score: {}".format(score), blue, 0, 300)
