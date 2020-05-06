@@ -8,8 +8,12 @@ pygame.init()
 blocklength = int(input("What size of snake do you want (10, 20, 30, 50 or anywhere inbetween)!\n"))            #ADD A PROCEDURE to ask the user if they want big snake or small snake. Choose skin colour as well???
 black = (0,0,0)
 green = (0,255,0)
+darkgreen = (220, 255, 10)
 blue = (0,0,255)
 red = (255,0,0)
+gold = (255, 223, 0)    #212, 175, 55
+silver = (192, 192, 192)
+highscore = 0
 
 #set up window
 window_width = blocklength * 40
@@ -23,7 +27,7 @@ pygame.display.set_caption('Snake game')
 
 
 
-def gameLoop():
+def gameLoop(highscore):
     #define variables that are reset for each game
     score = 0
     game_over = False
@@ -51,7 +55,7 @@ def gameLoop():
     #event loop
     while not game_over:
 
-        while round_over == True:
+        if round_over == True:
             #game over: display stats
             window.fill(black)
             if score == 1:
@@ -61,17 +65,22 @@ def gameLoop():
             message("Game over", red, 100, 10)
             message("Press Q to quit or space", red, 0, 60)
             message("to play again", red, 0, 110)
+            if score <= highscore:
+                message("Your highscore is {}".format(highscore), silver, 0, 180)
+            else:
+                message("New highscore!", gold, 0, 180)
+                highscore = score
+
             pygame.display.update()
-            #HIGHSCORE FUNCTION - save highscore between runs (and an all time leaderboard via a separate document???)
 
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        game_over = True
-                        round_over = False
-                    if event.key == pygame.K_SPACE:
-                        gameLoop()
-
+            while not game_over:
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_q:
+                            game_over = True
+                            round_over = False
+                        if event.key == pygame.K_SPACE:
+                            gameLoop(highscore)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -149,7 +158,10 @@ def gameLoop():
         number = 0
         for itemno in range(0,len(snakecoords)):
             if not itemno%2 == 1:
-                pygame.draw.rect(window, green, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
+                if number%4 == 0:
+                    pygame.draw.rect(window, green, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
+                else:
+                    pygame.draw.rect(window, darkgreen, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
                 number += 2
 
         #display score
@@ -162,4 +174,4 @@ def gameLoop():
     pygame.quit()
     quit()
 
-gameLoop()
+gameLoop(highscore)
