@@ -192,25 +192,29 @@ def gameLoop(highscore, snakes_peed):
                 game_over = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                #if not direction == "right":
-                    x1change = -blocklength
-                    y1change = 0
-                    direction = "left"
+                    if not direction == "right":
+                        direction = "left"
+                        x1change = -blocklength
+                        y1change = 0
+                        
                 elif event.key == pygame.K_RIGHT:
-                #if not direction == "left":
-                    x1change = blocklength
-                    y1change = 0
-                    direction = "right"
+                    if not direction == "left":
+                        direction = "right"
+                        x1change = blocklength
+                        y1change = 0
+                        
                 elif event.key == pygame.K_UP:
-                #if not direction == "down":
-                    x1change = 0
-                    y1change = -blocklength
-                    direction = "up"
+                    if not direction == "down":
+                        direction = "up"
+                        x1change = 0
+                        y1change = -blocklength
+                        
                 elif event.key == pygame.K_DOWN:
-                #if not direction == "up":
-                    x1change = 0
-                    y1change = blocklength
-                    direction = "down"
+                    if not direction == "up":
+                        direction = "down"
+                        x1change = 0
+                        y1change = blocklength
+                        
         #position apple
         if newpos == True:
             applex = random.randint(0, window_width - blocklength)
@@ -244,6 +248,7 @@ def gameLoop(highscore, snakes_peed):
         x1 += x1change
         y1 += y1change
 
+        #check if snake has run into itself
         if score >= 1:
             for i in range(0, len(snakecoords), 2):
                 if snakecoords[i] == x1:
