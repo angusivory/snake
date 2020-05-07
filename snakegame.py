@@ -6,16 +6,27 @@ pygame.init()
 
 
 #define constant variables
-                                    #blocklength = 0         #ADD A PROCEDURE to ask the user if they want big snake or small snake. Choose skin colour as well???
+red = (255,0,0)
+orange = (235, 134, 52)
+yellow = (220, 255, 10)
+lime = (171, 235, 52)
+green = (0,255,0)
+darkgreen = (28, 128, 51)
+blue = (0,0,255)
+purple = (171, 52, 235)
 white = (255, 255, 255)
 black = (0,0,0)
-green = (0,255,0)
-darkgreen = (220, 255, 10)
-blue = (0,0,255)
-red = (255,0,0)
 gold = (255, 223, 0)    #212, 175, 55
 silver = (192, 192, 192)
+colour1 = (0,255,0)
+colour2 = (220, 255, 10)
+colours1 = [green, blue, blue, silver, orange, purple, lime, green]
+colours2 = [yellow, blue, gold, red, blue, yellow, lime, darkgreen]
+x = 0
 highscore = 0
+#in case user somehow starts game without seting these
+blocklength = 20
+snake_speed = 20
 game_start = False
 sizeconfirm = False
 speedconfirm = False
@@ -35,7 +46,8 @@ def message(msg, color, msgx, msgy):
 
 #start screen
 while not game_start:
-    window = pygame.display.set_mode((400, 350))
+    window = pygame.display.set_mode((400, 400))
+    pygame.display.set_caption('Set up snake')
     message("Choose snake size:", blue, 0, 0)
     pygame.draw.rect(window, (0, 200, 250), [10, 60, 100, 40])
     if small == True:
@@ -59,6 +71,7 @@ while not game_start:
 
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
+            #if a size button is clicked
             if 10 <= mouse[0] <= 110 and 60 <= mouse[1] <= 100:
                 blocklength = 10
                 sizeconfirm = True
@@ -78,6 +91,7 @@ while not game_start:
                 medium = False
                 large = True
 
+            #if a speed button is clicked
             if 10 <= mouse[0] <= 110 and 200 <= mouse[1] <= 240:
                 snake_speed = 10
                 speedconfirm = True
@@ -97,28 +111,60 @@ while not game_start:
                 mediumspeed = False
                 fast = True
 
+            #if start button clicked
+            if 150 <= mouse[0] <= 250 and 330 <= mouse[1] <= 380:
+                if sizeconfirm == True and speedconfirm == True:
+                    game_start = True
+
+            #if R arrow clicked
+            if 290 <= mouse[0] <= 350 and 270 <= mouse[1] <= 310:
+                x += 1
+                colour1 = colours1[x%len(colours1)]
+                colour2 = colours2[x%len(colours2)]
+            elif 50 <= mouse[0] <= 110 and 270 <= mouse[1] <= 310:
+                if x == 0:
+                    x = (len(colours1))
+                else:
+                    x -= 1
+                colour1 = colours1[x%len(colours1)]
+                colour2 = colours2[x%len(colours2)]
+
+
+    pygame.draw.rect(window, white, [150, 330, 100, 50])     #start button
+    if sizeconfirm == True and speedconfirm == True:
+        message("Start", green, 160, 340)
+    elif sizeconfirm == False or speedconfirm == False:
+        message("Start", red, 160, 340)
+
     message("Choose snake speed:", blue, 0, 140)
     pygame.draw.rect(window, (0, 200, 250), [10, 200, 100, 40])
     if slow == True:
         message("slow", green, 20, 200)
     else:
         message("slow", white, 20, 200)
-    
     pygame.draw.rect(window, (0, 200, 250), [120, 200, 140, 40])
     if mediumspeed == True:
         message("medium", green, 120, 200)
     else:
         message("medium", white, 120, 200)
-    
     pygame.draw.rect(window, (0, 200, 250), [270, 200, 100, 40])
     if fast == True:
         message("fast", green, 280, 200)
     else:
         message("fast", white, 280, 200)
 
+    #skin changer and preview
+    pygame.draw.rect(window, colours1[x%len(colours1)], [130, 280, 20, 20])
+    pygame.draw.rect(window, colours2[x%len(colours1)], [150, 280, 20, 20])
+    pygame.draw.rect(window, colours1[x%len(colours1)], [170, 280, 20, 20])
+    pygame.draw.rect(window, colours2[x%len(colours1)], [190, 280, 20, 20])
+    pygame.draw.rect(window, colours1[x%len(colours1)], [210, 280, 20, 20])
+    pygame.draw.rect(window, colours2[x%len(colours1)], [230, 280, 20, 20])
+    pygame.draw.rect(window, colours1[x%len(colours1)], [250, 280, 20, 20])
 
-    if sizeconfirm == True and speedconfirm == True:
-        game_start = True
+    pygame.draw.polygon(window, (0, 200, 250), ((290, 280), (320, 280), (320, 270), (350, 290), (320, 310), (320, 300), (290, 300)))
+    pygame.draw.polygon(window, (0, 200, 250), ((110, 280), (80, 280), (80, 270), (50, 290), (80, 310), (80, 300), (110, 300)))
+
 
     pygame.display.update()
 
@@ -277,9 +323,9 @@ def gameLoop(highscore, snakes_peed):
         for itemno in range(0,len(snakecoords)):
             if not itemno%2 == 1:
                 if number%4 == 0:
-                    pygame.draw.rect(window, green, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
+                    pygame.draw.rect(window, colour1, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
                 else:
-                    pygame.draw.rect(window, darkgreen, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
+                    pygame.draw.rect(window, colour2, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
                 number += 2
 
         #display score
