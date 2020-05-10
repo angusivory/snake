@@ -181,8 +181,6 @@ pygame.display.set_caption('Snake game')
 
 
 
-
-
 def gameLoop(highscore, snakes_peed):
     #define variables that are reset for each game
     score = 0
@@ -320,13 +318,22 @@ def gameLoop(highscore, snakes_peed):
 
         pygame.draw.rect(window, (255,0,0), [applex, appley, blocklength, blocklength])
         number = 0
-        for itemno in range(0,len(snakecoords)):
-            if not itemno%2 == 1:
-                if number%4 == 0:
-                    pygame.draw.rect(window, colour1, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
-                else:
-                    pygame.draw.rect(window, colour2, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
-                number += 2
+        if len(snakecoords)%4 == 2:      #so that the snake's head is always the same colour
+            for itemno in range(0,len(snakecoords)):
+                if not itemno%2 == 1:
+                    if number%4 == 0:
+                        pygame.draw.rect(window, colour1, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
+                    else:
+                        pygame.draw.rect(window, colour2, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
+                    number += 2
+        else:
+            for itemno in range(0,len(snakecoords)):
+                if not itemno%2 == 1:
+                    if number%4 == 0:
+                        pygame.draw.rect(window, colour2, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
+                    else:
+                        pygame.draw.rect(window, colour1, [snakecoords[number],snakecoords[number+1],blocklength,blocklength])
+                    number += 2
 
         #display score
         pygame.draw.rect(window, (255,255,255,), [0, window_height - 50, window_width, 50])
